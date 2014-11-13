@@ -3,6 +3,8 @@
 # combines + and - genes to get one plot for TSS, TES, and genebody
 
 import csv, os, glob, collections
+from multiprocessing import Pool
+
 csv.register_dialect("textdialect", delimiter='\t')
 
 # write the mapping to a file
@@ -17,7 +19,7 @@ def writeFile(name, mapping, direc):
 	ofile.close()
 
 def processFile(fileName, isMinus):
-	os.chdir("/home/raflynn/GROseq_ASO/combined")
+	os.chdir("/home/raflynn/7SK/GROseq/combined")
 	print fileName
 	avgFile = glob.glob(fileName + "*.txt")[0]
 	print avgFile
@@ -35,42 +37,59 @@ def processFile(fileName, isMinus):
 	ifile.close()
 	return values
 
-def main():
-	samples = ["GRO_" + x for x in ["12C", "125", "123", "6C", "65", "63"]]
-	#regions = ["tss", "geneBody", "tes"]
-	regions = ["cleavage500"]
-	dir = "/home/raflynn/GROseq_ASO/"
-	
-	for sample in samples:
-		for region in regions:
-			# combine plus plus, minus minus for sense
-			file1 = dir + sample + "_plus/bins/" + region + "/" + region + "_+.txt"
-			file2 = dir + sample + "_minus/bins/" + region + "/" + region + "_-.txt"
+def processRegions(sample):
+	regions = ["tss", "geneBody", "tes"]
+	dir = "/home/raflynn/7SK/GROseq/"
 
-			opath = dir + "combined/"
-			ofile = sample + "_" + region + "_sense.txt"
-			os.system("cat " + file1 + " " + file2 + " > " + opath + ofile)
-			
-			os.chdir(opath)
-			cmd = "Rscript /home/raflynn/Scripts/metagene_maker/makeMetagenePlot.r " + sample + " " + region + " 6 0 100 " + ofile
-			print cmd
-			os.system(cmd)
-			
-			# combine plus minus, minus plus for antisense
-			file1 = dir + sample + "_plus/bins/" + region + "/" + region + "_-.txt"
-			file2 = dir + sample + "_minus/bins/" + region + "/" + region + "_+.txt"
-			
-			opath = dir + "combined/"
-			ofile = sample + "_" + region + "_antisense.txt"
-			os.system("cat " + file1 + " " + file2 + " > " + opath + ofile)
-			
-			os.chdir(opath)
-			cmd = "Rscript /home/raflynn/Scripts/metagene_maker/makeMetagenePlot.r " + sample + " " + region + " 6 0 100 " + ofile
-			print cmd
-			os.system(cmd)
 	
+	for region in regions:
+		# split allchr into plus and minus
+		plusdir = dir + sample + "_plus/bins/" + region + '/'
+		os.chdir(plusdir)
+		os.system("rm -f allchr_*.txt")
+		os.system("awk -F '\t' '{print >> \"allchr_\" $3 \".txt\"}' allchr.txt")
+		minusdir = dir + sample + "_minus/bins/" + region + '/'
+		os.chdir(minusdir)
+		os.system("rm -f allchr_*.txt")
+		os.system("awk -F '\t' '{print >> \"allchr_\" $3 \".txt\"}' allchr.txt")
+		
+		# combine plus plus, minus minus for sense
+		file1 = plusdir + "/allchr_+.txt"
+		file2 = minusdir + "/allchr_-.txt"
+
+		opath = dir + "combined/"
+		ofile = sample + "_" + region + "_sense.txt"
+		os.system("cat " + file1 + " " + file2 + " > " + opath + ofile)
+		
+		os.chdir(opath)
+		cmd = "Rscript /home/raflynn/Scripts/metagene_maker/makeMetagenePlot.r " + sample + " " + region + " 6 0 100 " + ofile
+		print cmd
+		os.system(cmd)
+		
+		# combine plus minus, minus plus for antisense
+		file1 = minusdir + "/allchr_+.txt"
+		file2 = plusdir + "/allchr_-.txt"
+		
+		opath = dir + "combined/"
+		ofile = sample + "_" + region + "_antisense.txt"
+		os.system("cat " + file1 + " " + file2 + " > " + opath + ofile)
+		
+		os.chdir(opath)
+		cmd = "Rscript /home/raflynn/Scripts/metagene_maker/makeMetagenePlot.r " + sample + " " + region + " 6 0 100 " + ofile
+		print cmd
+		os.system(cmd)
+	
+def main():
+	samples = ["GRO_" + x + 'comb' for x in ["12C", "125", "123", "6C", "65", "63"]]
+	#regions = ["cleavage500"]
+	dir = "/home/raflynn/7SK/GROseq/"
+	
+	p = Pool(6)
+	p.map(processRegions, samples)
+	
+	regions = ["tss", "geneBody", "tes"]
 	regionToFolderAvgs = collections.defaultdict(lambda: {})
-	name = "groseq_aso_combined"
+	name = "groseq_asoComb_combined"
 	for region in regions:
 		for direc in ["_sense", "_antisense"]:
 			os.chdir(dir)
