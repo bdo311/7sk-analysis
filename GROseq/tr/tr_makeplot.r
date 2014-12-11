@@ -1,10 +1,12 @@
-# if Sys.glob("gro_tr_comb.RData") load("gro_tr_comb.RData")
-# else {
-	# fn="tr_comb.txt"
-	# no_col = count.fields(fn, sep = "\t") 
-	# data = t(read.table(fn, sep='\t', fill=TRUE, row.names=1)) 
-# }
-fn="enh_tr_comb.txt"
+if (Sys.glob("gro_tr_comb.RData")) {
+	load("gro_tr_comb.RData")
+} else {
+	fn="tr_comb.txt"
+	no_col = count.fields(fn, sep = "\t") 
+	data = t(read.table(fn, sep='\t', fill=TRUE, row.names=1)) 
+}
+
+fn="enh_tr_comb_10000.txt"
 no_col = count.fields(fn, sep = "\t") 
 data = t(read.table(fn, sep='\t', fill=TRUE, row.names=1)) 
 
@@ -21,7 +23,7 @@ gro_63 = gro_63[!is.na(gro_63)]
 gro_65 = data[,"GRO_65comb"]
 gro_65 = gro_65[!is.na(gro_65)]
 
-pdf("gro_tr_comb_enh_boxplot.pdf", width=8, height=5)
+pdf("gro_tr_comb_enh_10000_boxplot.pdf", width=8, height=5)
 par(mfrow=c(1,2))
 boxplot(log2(gro_12C), log2(gro_123), log2(gro_125), xaxt='n', ylab="log2 TR", main="12hr ASO", ylim=c(-4,8))
 axis(1, at=1:3, labels=c("Control", "3' ASO", "5' ASO"))
@@ -32,7 +34,7 @@ axis(1, at=1:3, labels=c("Control", "3' ASO", "5' ASO"))
 abline(h=median(log2(gro_6C)), lty=2, col="red")
 dev.off()
 
-pdf("gro_tr_comb_enh_ecdf.pdf", width=8, height=8)
+pdf("gro_tr_comb_enh_10000_ecdf.pdf", width=8, height=8)
 par(mfrow=c(2, 1))
 Fn1 = ecdf(log2(gro_12C))
 Fn2 = ecdf(log2(gro_123))
@@ -51,4 +53,4 @@ lines(Fn3, col="blue")
 legend("topleft", legend=c("Control", "3' ASO", "5' ASO"), col=c("black", "red", "blue"),lty=1)
 dev.off()
 
-save.image("gro_tr_comb_enh.RData")
+save.image("gro_tr_comb_enh_10000.RData")

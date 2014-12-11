@@ -27,20 +27,20 @@ def main():
 	tmToTr = {}
 	for tm in treatments:
 		print tm
-		prom_plus = getHashMap(tm + '_plus/bins/promoter/allchr.txt', '+')
-		prom_minus = getHashMap(tm + '_minus/bins/promoter/allchr.txt', '-')
+		ds_plus = getHashMap(tm + '_plus/bins/dsoter/allchr.txt', '+')
+		ds_minus = getHashMap(tm + '_minus/bins/dsoter/allchr.txt', '-')
 		ds_plus = getHashMap(tm + '_plus/bins/downstream/allchr.txt', '+')
 		ds_minus = getHashMap(tm + '_minus/bins/downstream/allchr.txt', '-')
 		
 		tr = []
-		for gene in prom_plus:
+		for gene in ds_plus:
 			if gene not in ds_plus or ds_plus[gene] == 0: continue
-			if prom_plus[gene] == 0: continue
-			tr.append(prom_plus[gene]/ds_plus[gene])
-		for gene in prom_minus:
+			if ds_plus[gene] == 0: continue
+			tr.append(ds_plus[gene]/ds_plus[gene])
+		for gene in ds_minus:
 			if gene not in ds_minus or ds_minus[gene] == 0: continue
-			if prom_minus[gene] == 0: continue
-			tr.append(prom_minus[gene]/ds_minus[gene])			
+			if ds_minus[gene] == 0: continue
+			tr.append(ds_minus[gene]/ds_minus[gene])			
 		
 		tmToTr[tm] = tr
 			
