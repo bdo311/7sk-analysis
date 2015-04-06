@@ -11,19 +11,32 @@ gro12C=as.numeric(log2(data["GRO_12C",]))
 gro63=as.numeric(log2(data["GRO_63",]))
 gro65=as.numeric(log2(data["GRO_65",]))
 gro6C=as.numeric(log2(data["GRO_6C",]))
+
+
+gro12C=gro12C[gro12C!=0 & is.finite(gro12C)]
+gro125=gro125[gro125!=0 & is.finite(gro125)]
+gro6C=gro6C[gro6C!=0 & is.finite(gro6C)]
+gro65=gro65[gro65!=0  & is.finite(gro65)]
+
 pdf(ofn,width=7,height=10)
 par(mfrow=c(2,1))
-Fn1=ecdf(gro12C[gro12C!=0 & is.finite(gro12C)])
-Fn2=ecdf(gro125[gro125!=0 & is.finite(gro125)])
-plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="RE TR 12hr ASO")
+Fn1=ecdf(gro12C)
+Fn2=ecdf(gro125)
+plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="SE TR 12hr ASO")
 plot(Fn1,col="black",add=TRUE)
 legend("topleft",legend=c("12hr Ctrl","12hr 5'ASO"),col=c("black","red"),lty=1)
-Fn1=ecdf(gro6C[gro6C!=0 & is.finite(gro6C])
-Fn2=ecdf(gro65[gro65!=0  & is.finite(gro65)])
-plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="RE TR 6hr ASO")
+Fn1=ecdf(gro6C)
+Fn2=ecdf(gro65)
+plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="SE TR 6hr ASO")
 plot(Fn1,col="black",add=TRUE)
 legend("topleft",legend=c("6hr Ctrl","6hr 5'ASO"),col=c("black","red"),lty=1)
 dev.off()
+
+require(ggplot2)
+pdf("se_boxplot.pdf",width=6,height=6)
+p = ggplot(cbind(gro12C,gro123)) + geom_violin()
+
+
 
 
 

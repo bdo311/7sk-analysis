@@ -1,5 +1,5 @@
-#comp = read.table("comparisons_with7sk_allchip.txt",header=FALSE)
-comp = read.table("comparisons_with7sk_selectchip.txt",header=FALSE)
+comp = read.table("comparisons_with7sk_allchip.txt",header=FALSE)
+#comp = read.table("comparisons_with7sk_selectchip.txt",header=FALSE)
 denom = read.table("denominators_allchip.txt",header=FALSE)
 
 # large boxplots
@@ -62,12 +62,12 @@ require(pheatmap)
 require(RColorBrewer)
 colorRamp = colorRampPalette(c("blue","white","red"))
 
-pdf("ratio_heatmaps_with7sk_atac_selectchip.pdf",width=4,height=5)
-#pdf("ratio_heatmaps_with7sk_atac_allchip.pdf",width=4,height=10)
+#pdf("ratio_heatmaps_with7sk_atac_selectchip.pdf",width=4,height=5)
+pdf("ratio_heatmaps_with7sk_atac_allchip.pdf",width=4,height=10)
 
 for (i in 1:nrow(denom)) {
 	d = as.character(denom[i,1])
-	pheatmap(comparisons.df[[d]],cluster_cols=FALSE,main=d,scale="none",col=colorRamp(50),breaks=seq(-4,4,8/50))
+	pheatmap(comparisons.df[[d]],main=d,scale="none",col=colorRamp(50),breaks=seq(-4,4,8/50))
 	#for allchip (bigger)
 	#pheatmap(comparisons.df[[d]],cluster_rows=FALSE,cluster_cols=FALSE,main=d,scale="none",col=colorRamp(50),breaks=seq(-2,2,4/50)) #for selectchip (smaller)
 
@@ -106,9 +106,9 @@ newData = as.data.frame(newDataList)
 #pca
 addTrans <- function(color,trans)
 {
-  # This function adds transparancy to a color.
-  # Define transparancy with an integer between 0 and 255
-  # 0 being fully transparant and 255 being fully visable
+  # This function adds transparency to a color.
+  # Define transparency with an integer between 0 and 255
+  # 0 being fully transparent and 255 being fully visible
   # Works with either color and trans a vector of equal length,
   # or one of the two of length 1.
 
@@ -126,16 +126,31 @@ addTrans <- function(color,trans)
   return(res)
 }
 
+#TR for super enhancers
+data=read.delim("/home/raflynn/7SK/GROseq/Flynn/grochg/se_tr_withnames.txt",header=TRUE,row.names=1)
+tr=log2(data$GRO_125/data$GRO_12C)
+names(tr)=rownames(data)
+
+#reorder TR list for our super enhancers
+fn = "SE_indiv_list_with7sk_atac.txt"
+data = read.delim(fn,header=TRUE,row.names=1,colClasses=c("character",rep("numeric",74)))
+tr=tr[rownames(data)]
+
+# tr_bin=0
+# tr_bin[abs(tr)<0.5]=3 #3 for >0
+# tr_bin[abs(tr)>0.5]=4 #4 for <0
+
 #whiten the data by making all factors mean 0
 newData.log = apply(newData,c(1,2),function(x) ifelse(x!=0,log2(x),0))
 newData.log=as.data.frame(newData.log)
 newData.means = apply(newData.log,2,mean)
 
 newData.logm = as.data.frame(t(apply(newData.log,1,function(x) x - newData.means)))
-dataList = c(rep(1,dataTypes[["TSS_trans_paused"]]),rep(2,dataTypes[["RY_enh"]]),rep(3,dataTypes[["SE_indiv"]]))
+#dataList = c(rep(1,dataTypes[["TSS_trans_paused"]]),rep(2,dataTypes[["RY_enh"]]),rep(3,dataTypes[["SE_indiv"]]))
+dataList = c(rep(1,dataTypes[["TSS_trans_paused"]]),rep(2,dataTypes[["RY_enh"]]),tr_bin) #use tr to mark SE TRs
 
 pr = prcomp(newData.logm) #pca with RAW VALUES
-pdf("first2PCs_raw_selectchip.pdf",width=7,height=7)
+pdf("first2PCs_raw_allchip_tr.pdf",width=7,height=7)
 plot(pr$x[,1:2],col=addTrans(dataList,200),pch=19,cex=0.7,main="First 2 PCs")
 legend("topleft",legend=c("TSS","Super enhancer","Regular enhancer"),col=c("black","green","red"),pch=19)
 dev.off()
@@ -145,7 +160,7 @@ newData.log.scannell = apply(newData.log,2,function(x)x-newData.log$Scannell_TBP
 newData.means = apply(newData.log.scannell,2,mean)
 newData.logm.scannell = as.data.frame(t(apply(newData.log.scannell,1,function(x) x - newData.means)))
 pr = prcomp(newData.logm.scannell) 
-pdf("first2PCs_scannellTBP_allchip.pdf",width=7,height=7)
+pdf("first2PCs_scannellTBP_allchip_tr.pdf",width=7,height=7)
 plot(pr$x[,1:2],col=addTrans(dataList,200),pch=19,cex=0.7,main="First 2 PCs")
 legend("topleft",legend=c("TSS","Super enhancer","Regular enhancer"),col=c("black","green","red"),pch=19)
 dev.off()
@@ -154,11 +169,19 @@ newData.log.rahl = apply(newData.log,2,function(x)x-newData.log$Rahl_TBP)
 newData.means = apply(newData.log.rahl,2,mean)
 newData.logm.rahl = as.data.frame(t(apply(newData.log.rahl,1,function(x) x - newData.means)))
 pr = prcomp(newData.logm.rahl) 
-pdf("first2PCs_rahlTBP_allchip.pdf",width=7,height=7)
+pdf("first2PCs_rahlTBP_allchip_tr.pdf",width=7,height=7)
 plot(pr$x[,1:2],col=addTrans(dataList,200),pch=19,cex=0.7,main="First 2 PCs")
 legend("topleft",legend=c("TSS","Super enhancer","Regular enhancer"),col=c("black","green","red"),pch=19)
 dev.off()
 
+
+library(ggplot2)
+library(RColorBrewer)
+se.pca = pr$x[(nrow(pr$x)-559):nrow(pr$x),1:2]
+se.pca=cbind(se.pca,tr)
+colnames(se.pca)=c("pc1","pc2","tr")
+write.table(se.pca,"se_pca.txt",sep='\t')
+qplot(se.pca,color=tr)+scale_color_brewer()
 
 # get loadings
 pdf("loadings.pdf",width=20,height=10)

@@ -17,11 +17,14 @@ pol2_ser2p=process("Rahl_Pol2_Ser2p_genome_shifted_norm_1kb.bed")
 pol2_ser5p=process("Rahl_Pol2_Ser5p_genome_shifted_norm_1kb.bed")
 spt5=process("Rahl_SPT5_genome_shifted_norm_1kb.bed")
 wt_7sk=process("WT_genome_merged_norm_1kb.bed")
+brd4=process("rahl_brd4_1kb.bed")
+tbp=process("rahl_tbp_1kb.bed")
+atacseq_12c=process("ATACseq_12C_merge_norm_1kb.bed")
 gro_pos=process("GRO_12Ccomb_positive_1kb.bed")
 gro_neg=process("GRO_12Ccomb_negative_1kb.bed")
 gro_12c=(gro_pos+gro_neg)/2
 
-data=data.frame(cbind(h3k27ac,h3k27me3,h3k4me1,h3k4me3,h3k9me3,ctr9,nelfa,pol2_ser2p,pol2_ser5p,spt5,wt_7sk,gro_12c))
+data=data.frame(cbind(h3k27ac,h3k27me3,h3k4me1,h3k4me3,h3k9me3,ctr9,nelfa,pol2_ser2p,pol2_ser5p,spt5,wt_7sk,gro_12c,brd4,tbp,atacseq_12c))
 c=cor(data)
 c_spe=cor(data,method="spe")
 
