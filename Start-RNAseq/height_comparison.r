@@ -1,0 +1,10 @@
+data=read.delim("tss_height_comparison.txt",header=FALSE)
+colnames(data)=c('first','second','name')
+sense_prop = with(data[data$name=="sense",],second/first)
+antisense_prop = with(data[data$name=="antisense",],second/first)
+
+pdf("tss_height_comparison.pdf",width=5,height=5)
+plot(density(sense_prop),xlab="Second highest peak height as proportion of highest peak",ylab="Density",main="Height of second peak",ylim=c(0,2))
+lines(density(antisense_prop),col="red")
+legend("topright",legend=c("sense","antisense"),col=c("black","red"),lty=1)
+dev.off()

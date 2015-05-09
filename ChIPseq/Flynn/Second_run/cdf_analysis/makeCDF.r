@@ -1,11 +1,11 @@
 # makeCDF.r
 # 3/4/15
 
-#re = read.delim("re_matrix.txt",header=TRUE,row.names=1)
+re = read.delim("re_matrix.txt",header=TRUE,row.names=1)
 #re = read.delim("se_matrix.txt",header=TRUE,row.names=1)
-re = read.delim("tss_matrix.txt",header=TRUE,row.names=1)
+#re = read.delim("tss_matrix.txt",header=TRUE,row.names=1)
 
-BAF155_3p = with(re, log2(BAF155_3p_merge/Input_3p_merge))
+#BAF155_3p = with(re, log2(BAF155_3p_merge/Input_3p_merge))
 BAF155_5p = with(re, log2(BAF155_5p_merge/Input_5p_merge))
 BAF155_Scr = with(re, log2(BAF155_Scr_merge/Input_Scr_merge))
 
@@ -13,7 +13,7 @@ BAF155_Scr = with(re, log2(BAF155_Scr_merge/Input_Scr_merge))
 # Pou5f1_5p_mergeAB = with(re, log2(Pou5f1_5p_mergeAB/Input_5p_merge))
 # Pou5f1_Scr_mergeAB = with(re, log2(Pou5f1_Scr_mergeAB/Input_Scr_merge))
 
-Pou5f1_3p_mergeAD = with(re, log2(Pou5f1_3p_mergeAD/Input_3p_merge))
+#Pou5f1_3p_mergeAD = with(re, log2(Pou5f1_3p_mergeAD/Input_3p_merge))
 Pou5f1_5p_mergeAD = with(re, log2(Pou5f1_5p_mergeAD/Input_5p_merge))
 Pou5f1_Scr_mergeAD = with(re, log2(Pou5f1_Scr_mergeAD/Input_Scr_merge))
 

@@ -10,9 +10,9 @@ reToValues = collections.defaultdict(lambda: [])
 seToValues = collections.defaultdict(lambda: [])
 tssToValues = collections.defaultdict(lambda: [])
 
-datasets = ["BAF155_3p_merge","BAF155_5p_merge","BAF155_Scr_merge","Input_3p_merge","Input_5p_merge","Input_Scr_merge","Pou5f1_3p_mergeAB","Pou5f1_3p_mergeAD","Pou5f1_5p_mergeAB","Pou5f1_5p_mergeAD","Pou5f1_Scr_mergeAB","Pou5f1_Scr_mergeAD"]
+datasets = ["BAF155_5p_merge","BAF155_Scr_merge","Input_5p_merge","Input_Scr_merge","Pou5f1_5p_mergeAD","Pou5f1_Scr_mergeAD"]
 for d in datasets:
-	ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/All_Enhancers/allchr_sorted.txt",'r')
+	ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/mES_SEindiv_noTSS_1kb/allchr_sorted.txt",'r') #added 4/6 for notss SE
 	reader = csv.reader(ifile, 'textdialect')
 	
 	for row in reader:
@@ -21,12 +21,27 @@ for d in datasets:
 		
 		values = [float(x) for x in row[107:307]]
 		avg = np.mean(values)
-		if isSE: seToValues[name].append(avg)
-		else: reToValues[name].append(avg)
+		seToValues[name].append(avg)
+	
+	ifile.close()
+
+	# ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/RY_enh/allchr_sorted.txt",'r')
+	ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/RY_enh_centered/allchr_sorted.txt",'r')
+	reader = csv.reader(ifile, 'textdialect')
+	
+	for row in reader:
+		name = '_'.join(row[:3])
+		isSE = ('__' in row[3])
+		
+		values = [float(x) for x in row[107:307]]
+		avg = np.mean(values)
+		reToValues[name].append(avg)
 	
 	ifile.close()
 	
-	ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/TSS_trans_paused/allchr_sorted.txt",'r')
+	
+	ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/TSS_centered/allchr_sorted.txt",'r')
+	# ifile = open("/home/raflynn/7SK/ChIPseq/Flynn/Second_run/metagenes/" + d + "/bins/TSS_trans_paused/allchr_sorted.txt",'r')
 	reader = csv.reader(ifile, 'textdialect')
 	
 	for row in reader:

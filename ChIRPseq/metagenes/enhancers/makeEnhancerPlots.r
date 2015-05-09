@@ -5,12 +5,12 @@
 # name="7SK_HeLa"
 # se_name="HeLa_SE_indiv"
 # ry_name="HeLa_enhancers"
-name="7SK_H1"
-se_name="H1_SE_indiv"
-ry_name="H1_enhancers"
-# name="7SK_mES_WT"
-# se_name="SE_indiv"
-# ry_name="RY_enh"
+# name="7SK_H1"
+# se_name="H1_SE_indiv"
+# ry_name="H1_enhancers"
+name="7SK_mES_WT"
+se_name="SE_indiv"
+ry_name="RY_enh_centered"
 se = read.delim(paste("~/7SK/ChIRPseq/metagenes/",name,"/bins/",se_name,"/allchr_sorted.txt",sep=''),colClasses=c(rep("character",6),rep("numeric",401)),header=FALSE)
 ry = read.delim(paste("~/7SK/ChIRPseq/metagenes/",name,"/bins/",ry_name,"/allchr_sorted.txt",sep=''),colClasses=c(rep("character",6),rep("numeric",401)),header=FALSE)
 
@@ -18,11 +18,14 @@ ry = read.delim(paste("~/7SK/ChIRPseq/metagenes/",name,"/bins/",ry_name,"/allchr
 se.len=se[,7]
 ry.len=ry[,7]
 comb=c(se.len,ry.len)
-o=order(comb,decreasing=TRUE)
+o=order(comb,decreasing=FALSE)
 color=c(rep(2,length(se.len)),rep(1,length(ry.len)))
 comb=comb[o]
 color=color[o]
-# plot(1:length(comb),comb,col=color,pch=19)
+pdf("7SK_mES_WT_enhancers.pdf",width=6,height=6)
+plot(1:length(comb),comb,col=color,pch=19,xlab="Enhancers ranked by read count",ylab="7SK read count",main="7SK ChIRP read count per enhancer")
+legend("topleft",legend=c("Regular enhancer","Super enhancer"),col=1:2,pch=19)
+dev.off()
 
 #metagene
 allenh=rbind(se,ry)

@@ -1,8 +1,8 @@
-#fn="promoter_tr.txt"
-#ofn="promoter.pdf"
+# fn="promoter_tr.txt"
+# ofn="promoter.pdf"
 
-fn="re_tr.txt"
-ofn="re.pdf"
+fn="se_tr.txt"
+ofn="se.pdf"
 
 data=read.delim(fn,header=FALSE,row.names=1)
 gro123=as.numeric(log2(data["GRO_123",]))
@@ -22,21 +22,15 @@ pdf(ofn,width=7,height=10)
 par(mfrow=c(2,1))
 Fn1=ecdf(gro12C)
 Fn2=ecdf(gro125)
-plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="SE TR 12hr ASO")
+plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="Gene TR 12hr ASO")
 plot(Fn1,col="black",add=TRUE)
 legend("topleft",legend=c("12hr Ctrl","12hr 5'ASO"),col=c("black","red"),lty=1)
 Fn1=ecdf(gro6C)
 Fn2=ecdf(gro65)
-plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="SE TR 6hr ASO")
+plot(Fn2,col="red",xlim=c(-4,9),xlab="log2 TR",main="Gene TR 6hr ASO")
 plot(Fn1,col="black",add=TRUE)
 legend("topleft",legend=c("6hr Ctrl","6hr 5'ASO"),col=c("black","red"),lty=1)
 dev.off()
-
-require(ggplot2)
-pdf("se_boxplot.pdf",width=6,height=6)
-p = ggplot(cbind(gro12C,gro123)) + geom_violin()
-
-
 
 
 

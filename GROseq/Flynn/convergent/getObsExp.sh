@@ -2,53 +2,54 @@
 #convergent_aso: 1349785*100=134,978,500
 
 ### SUPER ENHANCERS ###
-bedtools intersect -a convergent_wt.bedGraph -b ~/7SK/ChIRPseq/genes/mES_SE_individual_1kb_BED6.bed | wc -l 
-#obs: 7841*100=784,100
-#total nt: 559*2000=1118000
+bedtools intersect -a convergent_wt.bedGraph -b mES_SE_individual_1kb_BED6_sorted.bed | wc -l 
+#obs: 5251*100=525,100
+#total nt: 361*2000=722,000
 #exp in genome: 96,301,000
 #total in genome: 2,800,000,000
-#exp: 38,452
-#enrichment: 20.39
-bedtools intersect -a convergent_aso.bedGraph -b ~/7SK/ChIRPseq/genes/mES_SE_individual_1kb_BED6.bed | wc -l #
-#obs: 9571*100=957,100
-#total nt: 559*2000=1118000
+#exp: 24,832
+#enrichment: 21.15
+bedtools intersect -a convergent_aso.bedGraph -b mES_SE_individual_1kb_BED6_sorted.bed | wc -l 
+#obs: 6418*100=641,800
+#total nt: 361*2000=722,000
 #exp in genome: 134,978,500
 #total in genome: 2,800,000,000
-#exp: 53,895
-#enrichment: 17.76
+#exp: 34,805
+#enrichment: 18.44
 
 ### REGULAR ENHANCERS ###
-bedtools intersect -a convergent_wt.bedGraph -b ~/7SK/ChIRPseq/genes/mES_reg_enhancers_RY_1kb_BED6.bed | wc -l 
-#obs: 28149*100 = 2,814,900
-#total nt: 8563*2000=17,126,000
+#Old: bedtools intersect -a convergent_wt.bedGraph -b ~/7SK/ChIRPseq/genes/mES_reg_enhancers_RY_1kb_BED6.bed | wc -l
+bedtools intersect -a convergent_wt.bedGraph -b mES_reg_enhancers_RY_startseq_centered_1kb_sorted.bed | wc -l
+#obs: 25795*100 = 2,579,500
+#total nt: 5356*2000=10,712,000
 #exp in genome: 96,301,000
 #total in genome: 2,800,000,000
-#exp: 589,018
-#enrichment: 4.78
-bedtools intersect -a convergent_aso.bedGraph -b ~/7SK/ChIRPseq/genes/mES_reg_enhancers_RY_1kb_BED6.bed | wc -l 
-#obs: 46574*100 = 4,657,400
-#total nt: 8563*2000=17,126,000
+#exp: 368420
+#enrichment: 7.00
+bedtools intersect -a convergent_aso.bedGraph -b mES_reg_enhancers_RY_startseq_centered_1kb_sorted.bed | wc -l 
+#obs: 41034*100 = 4,103,400
+#total nt: 5356*2000=10,712,000
 #exp in genome: 134,978,500
 #total in genome: 2,800,000,000
-#exp: 825586
-#enrichment: 5.64
+#exp: 516389
+#enrichment: 7.95
 
 ### TSS ###
-python makeTransPausedBed.py ~/7SK/ChIRPseq/genes/mm9_refseq_tss_BED6.bed ~/7SK/ChIRPseq/genes/subsets/mm9_refseq_transcribedOrPausedGenes.txt mm9_refseq_tss_transPaused.bed #7867
-bedtools intersect -a convergent_wt.bedGraph -b mm9_refseq_tss_transPaused.bed | wc -l 
-#obs: 83159*100 = 8,315,900
-#total nt: 7867*2000=15,734,000
+# Old: python makeTransPausedBed.py ~/7SK/ChIRPseq/genes/mm9_refseq_tss_BED6.bed ~/7SK/ChIRPseq/genes/subsets/mm9_refseq_transcribedOrPausedGenes.txt mm9_refseq_tss_transPaused.bed #7867
+bedtools intersect -a convergent_wt.bedGraph -b mm9_tss_startseq_centered_1kb_sorted.bed | wc -l 
+#obs: 124465*100 = 12,446,500
+#total nt: 14234*2000=28,468,000
 #exp in genome: 96,301,000
 #total in genome: 2,800,000,000
-#exp: 541,143
-#enrichment: 15.37
-bedtools intersect -a convergent_aso.bedGraph -b mm9_refseq_tss_transPaused.bed | wc -l 
-#obs: 96300*100 = 9,630,000
-#total nt: 7867*2000=15,734,000
+#exp: 979,106
+#enrichment: 12.71
+bedtools intersect -a convergent_aso.bedGraph -b mm9_tss_startseq_centered_1kb_sorted.bed | wc -l 
+#obs: 147047*100 = 14,704,700
+#total nt: 7867*2000=28,468,000
 #exp in genome: 134,978,500
 #total in genome: 2,800,000,000
-#exp: 785483
-#enrichment: 12.26
+#exp: 1372346
+#enrichment: 10.72
 
 ### CTCF SITES ###
 bedtools intersect -a convergent_wt.bedGraph -b /home/raflynn/7SK/ATACseq/Nucleosome_signal_v3/Regions/CTCF_motif-peaks_noTSS_win2k.bed | wc -l 
@@ -65,11 +66,6 @@ bedtools intersect -a convergent_aso.bedGraph -b /home/raflynn/7SK/ATACseq/Nucle
 #total in genome: 2,800,000,000
 #exp: 3153676
 #enrichment: 2.36
-
-### TELOMERES ###
-
-
-
 
 ### RANDOM INTERGENIC REGIONS ###
 bedtools random -l 2000 -n 10000 -g /seq/chromosome/mm9/mm9.sizes | sort -k1,1 -k2,2n > mm9_random_loci.bed
