@@ -3,13 +3,13 @@ comp = read.table("comparisons_with7sk_selectchip.txt",header=FALSE)
 denom = read.table("denominators_allchip.txt",header=FALSE)
 
 # large boxplots
-regionTypes = c("TSS_centered","RY_enh_centered","SE_indiv")
+regionTypes = c("TSS_trans_paused","SE_indiv","RY_enh")
 comparisons = list()
 
 for (regionType in regionTypes) {
 	print(regionType)
-	fn = paste(regionType, "_list_all.txt",sep='')
-	data = read.delim(fn,header=TRUE,row.names=1,colClasses=c("character",rep("numeric",75)))
+	fn = paste(regionType, "_list_with7sk_atac.txt",sep='')
+	data = read.delim(fn,header=TRUE,row.names=1,colClasses=c("character",rep("numeric",74)))
 	
 	newDataList = list()
 	for (i in 1:nrow(comp)) {
@@ -56,8 +56,8 @@ require(pheatmap)
 require(RColorBrewer)
 colorRamp = colorRampPalette(c("blue","white","red"))
 
-pdf("ratio_heatmaps_selectchip.pdf",width=4,height=5)
-#pdf("ratio_heatmaps_allchip.pdf",width=4,height=10)
+pdf("ratio_heatmaps_with7sk_atac_selectchip.pdf",width=4,height=5)
+#pdf("ratio_heatmaps_with7sk_atac_allchip.pdf",width=4,height=10)
 
 for (i in 1:nrow(denom)) {
 	d = as.character(denom[i,1])
@@ -67,14 +67,15 @@ dev.off()
 
 
 ### PCA, based on allchip
-regionTypes = c("TSS_centered","RY_enh_centered","SE_indiv")
+regionTypes = c("TSS_trans_paused","RY_enh","SE_indiv")
+#regionTypes = c("RY_enh_centered","TSS_centered","SE_indiv")
 
 newDataList = list()
 dataTypes = list()
 for (regionType in regionTypes) {
 	print(regionType)
-	fn = paste(regionType, "_list_all.txt",sep='')
-	data = read.delim(fn,header=TRUE,row.names=1,colClasses=c("character",rep("numeric",75)))
+	fn = paste(regionType, "_list_with7sk_atac.txt",sep='')
+	data = read.delim(fn,header=TRUE,row.names=1,colClasses=c("character",rep("numeric",74)))
 	dataTypes[[regionType]] = nrow(data)
 	
 	for (i in 1:nrow(comp)) {
@@ -103,11 +104,11 @@ newData.log=as.data.frame(newData.log)
 newData.means = apply(newData.log,2,mean)
 
 newData.logm = as.data.frame(t(apply(newData.log,1,function(x) x - newData.means)))
-dataList = c(rep("TSS",dataTypes[["TSS_centered"]]),rep("RE",dataTypes[["RY_enh_centered"]]),rep("SE",dataTypes[["SE_indiv"]]))
-#dataList = c(rep(2,dataTypes[["RY_enh_centered"]]),rep(1,dataTypes[["TSS_centered"]]),rep(3,dataTypes[["SE_indiv"]]))
+dataList = c(rep("TSS",dataTypes[["TSS_trans_paused"]]),rep("RE",dataTypes[["RY_enh"]]),rep("SE",dataTypes[["SE_indiv"]]))
+#dataList = c(rep(1,dataTypes[["TSS_trans_paused"]]),rep(2,dataTypes[["RY_enh"]]),rep(3,dataTypes[["SE_indiv"]]))
 
 pr = prcomp(newData.logm) #pca with RAW VALUES
-pdf("first2PCs_raw_selectchip.pdf",width=7,height=7)
+pdf("first2PCs_raw_selectchip_test.pdf",width=7,height=7)
 firstpc = as.data.frame(pr$x[,1:2])
 firstpc$col = dataList
 colnames(firstpc)=c("PC1","PC2","Element")
@@ -121,7 +122,7 @@ newData.log.scannell = apply(newData.log,2,function(x)x-newData.log$Scannell_TBP
 newData.means = apply(newData.log.scannell,2,mean)
 newData.logm.scannell = as.data.frame(t(apply(newData.log.scannell,1,function(x) x - newData.means)))
 pr = prcomp(newData.logm.scannell) 
-pdf("first2PCs_scannellTBP_selectchip.pdf",width=7,height=7)
+pdf("first2PCs_scannellTBP_selectchip_test.pdf",width=7,height=7)
 firstpc = as.data.frame(pr$x[,1:2])
 firstpc$col = dataList
 colnames(firstpc)=c("PC1","PC2","Element")
@@ -134,13 +135,13 @@ newData.log.rahl = apply(newData.log,2,function(x)x-newData.log$Rahl_TBP)
 newData.means = apply(newData.log.rahl,2,mean)
 newData.logm.rahl = as.data.frame(t(apply(newData.log.rahl,1,function(x) x - newData.means)))
 pr = prcomp(newData.logm.rahl) 
-pdf("first2PCs_rahlTBP_selectchip.pdf",width=7,height=7)
+pdf("first2PCs_rahlTBP_selectchip_test2.pdf",width=7,height=7)
 firstpc = as.data.frame(pr$x[,1:2])
 firstpc$col = dataList
 colnames(firstpc)=c("PC1","PC2","Element")
 ggplot(firstpc, aes(x = PC1, y = PC2, colour = Element)) + stat_density2d () + theme_bw()
-#plot(pr$x[,1:2],col=addTrans(dataList,150),pch=19,cex=0.7,main="First 2 PCs")
-#legend("topleft",legend=c("TSS","Super enhancer","Regular enhancer"),col=c("black","green","red"),pch=19)
+# plot(pr$x[,1:2],col=addTrans(dataList,150),pch=19,cex=0.7,main="First 2 PCs")
+# legend("topleft",legend=c("TSS","Super enhancer","Regular enhancer"),col=c("black","green","red"),pch=19)
 dev.off()
 
 
@@ -174,20 +175,20 @@ dev.off()
 # dev.off()
 
 #pca
-# addTrans <- function(color,trans) {
-  # if (length(color)!=length(trans)&!any(c(length(color),length(trans))==1)) stop("Vector lengths not correct")
-  # if (length(color)==1 & length(trans)>1) color <- rep(color,length(trans))
-  # if (length(trans)==1 & length(color)>1) trans <- rep(trans,length(color))
+addTrans <- function(color,trans) {
+  if (length(color)!=length(trans)&!any(c(length(color),length(trans))==1)) stop("Vector lengths not correct")
+  if (length(color)==1 & length(trans)>1) color <- rep(color,length(trans))
+  if (length(trans)==1 & length(color)>1) trans <- rep(trans,length(color))
 
-  # num2hex <- function(x)
-  # {
-    # hex <- unlist(strsplit("0123456789ABCDEF",split=""))
-    # return(paste(hex[(x-x%%16)/16+1],hex[x%%16+1],sep=""))
-  # }
-  # rgb <- rbind(col2rgb(color),trans)
-  # res <- paste("#",apply(apply(rgb,2,num2hex),2,paste,collapse=""),sep="")
-  # return(res)
-# }
+  num2hex <- function(x)
+  {
+    hex <- unlist(strsplit("0123456789ABCDEF",split=""))
+    return(paste(hex[(x-x%%16)/16+1],hex[x%%16+1],sep=""))
+  }
+  rgb <- rbind(col2rgb(color),trans)
+  res <- paste("#",apply(apply(rgb,2,num2hex),2,paste,collapse=""),sep="")
+  return(res)
+}
 
 
 

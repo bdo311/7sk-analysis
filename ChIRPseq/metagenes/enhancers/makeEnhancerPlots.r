@@ -9,7 +9,7 @@
 # se_name="H1_SE_indiv"
 # ry_name="H1_enhancers"
 name="7SK_mES_WT"
-se_name="SE_indiv"
+se_name="mES_SEindiv_noTSS_1kb"
 ry_name="RY_enh_centered"
 se = read.delim(paste("~/7SK/ChIRPseq/metagenes/",name,"/bins/",se_name,"/allchr_sorted.txt",sep=''),colClasses=c(rep("character",6),rep("numeric",401)),header=FALSE)
 ry = read.delim(paste("~/7SK/ChIRPseq/metagenes/",name,"/bins/",ry_name,"/allchr_sorted.txt",sep=''),colClasses=c(rep("character",6),rep("numeric",401)),header=FALSE)
