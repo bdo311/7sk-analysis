@@ -38,5 +38,11 @@ addTrans <- function(color,trans)
 pdf("rnaseq_vs_groseq.pdf",width=5,height=5)
 plot(re.stats$rna,re.stats$gro,cex=0.4,pch=19,col=addTrans("red",100),xlab="Brg1 KD RNAseq log2 change",ylab="7SK ASO GROseq log2 change",xlim=c(-4,4),ylim=c(-4,4))
 points(se.stats$rna,se.stats$gro,cex=0.4,pch=19,col=addTrans("green",150))
-abline(v=0,h=0,lty=2,lwd=2,col="lightblue")
+abline(v=0,h=0,lty=2,lwd=4,col="lightblue")
+
+# Regression lines
+re.reg = lm(re.stats$gro ~ re.stats$rna)
+se.reg = lm(se.stats$gro ~ se.stats$rna)
+abline(re.reg,col="firebrick",lwd=4)
+abline(se.reg,col="darkgreen",lwd=4)
 dev.off()
