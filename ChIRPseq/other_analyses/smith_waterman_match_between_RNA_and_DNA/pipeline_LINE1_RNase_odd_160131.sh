@@ -2,11 +2,11 @@
 # 1. get the fasta files for ncRNA and target DNA
 # 2. put the files in the folder 'sequences'
 # 3. write down file name below
-RNAfile=Mm_7SK.fa
-DNAfile=random_peaks.fasta
+RNAfile=Mm_Line1spa.fa
+DNAfile=Mm_Line1ChIRP_RNase_odd.fasta
 
 # 4. set output folder below
-output=random
+output=Mm_Line1ChIRP_RNase_odd
 
 # 5. modify the parameters only if necessary
 gap_penalty=100
@@ -19,14 +19,14 @@ script=./script
 sequences=./sequences
 
 # make the output folder
-mkdir $output
+#mkdir $output
 
 # dinucleotide shuffle the sequence
-python $script/fasta-dinucleotide-shuffle.py -f $sequences/$RNAfile -t -shuffled > $sequences/$RNAfile.shuffled
-python $script/fasta-dinucleotide-shuffle.py -f $sequences/$DNAfile -t -shuffled > $sequences/$DNAfile.shuffled
+#python $script/fasta-dinucleotide-shuffle.py -f $sequences/$RNAfile -t -shuffled > $sequences/$RNAfile.shuffled
+#python $script/fasta-dinucleotide-shuffle.py -f $sequences/$DNAfile -t -shuffled > $sequences/$DNAfile.shuffled
 
 # fix shuffle
-python $script/fixShuffled.py $sequences/$DNAfile $sequences/$DNAfile.shuffled
+#python $script/fixShuffled.py $sequences/$DNAfile $sequences/$DNAfile.shuffled
 
 # find best matches
 $script/smith_waterman $sequences/$RNAfile $sequences/$DNAfile $script/identity.scoremat $gap_penalty > $output/RNA-DNA.alignment

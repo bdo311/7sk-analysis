@@ -2,11 +2,11 @@
 # 1. get the fasta files for ncRNA and target DNA
 # 2. put the files in the folder 'sequences'
 # 3. write down file name below
-RNAfile=Mm_7SK.fa
-DNAfile=random_peaks.fasta
+RNAfile=Mm_Line1spa_2.fa
+DNAfile=Mm_Line1ChIRP_odd.fasta
 
 # 4. set output folder below
-output=random
+output=Mm_Line1ChIRP_odd
 
 # 5. modify the parameters only if necessary
 gap_penalty=100
